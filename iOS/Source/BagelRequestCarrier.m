@@ -27,13 +27,13 @@
 - (instancetype)initWithTask:(NSURLSessionTask*)urlSessionTask
 {
     self = [super init];
-
+    
     if (self) {
         self.urlSessionTask = urlSessionTask;
-
+        
         [self setup];
     }
-
+    
     return self;
 }
 
@@ -53,9 +53,9 @@
 - (void)setup
 {
     self.carrierId = [BagelUtility UUID];
-
+    
     self.startDate = [NSDate date];
-
+    
     self.data = nil;
     self.isCompleted = NO;
 }
@@ -78,43 +78,39 @@
 - (BagelRequestPacket*)packet
 {
     BagelRequestPacket* packet = [[BagelRequestPacket alloc] init];
-
+    
     packet.packetId = self.carrierId;
-
+    
     BagelRequestInfo* requestInfo = [[BagelRequestInfo alloc] init];
     
     if (self.urlSessionTask) {
-        
         requestInfo.url = self.urlSessionTask.originalRequest.URL;
         requestInfo.requestHeaders = self.self.urlSessionTask.currentRequest.allHTTPHeaderFields;
         requestInfo.requestBody = self.self.urlSessionTask.originalRequest.HTTPBody;
         requestInfo.requestMethod = self.self.urlSessionTask.originalRequest.HTTPMethod;
-        
-    }else if (self.urlConnection) {
-        
+    } else if (self.urlConnection) {
         requestInfo.url = self.urlConnection.originalRequest.URL;
         requestInfo.requestHeaders = self.self.urlConnection.currentRequest.allHTTPHeaderFields;
         requestInfo.requestBody = self.self.urlConnection.originalRequest.HTTPBody;
         requestInfo.requestMethod = self.self.urlConnection.originalRequest.HTTPMethod;
-        
     }
-
+    
     NSHTTPURLResponse* httpURLResponse = (NSHTTPURLResponse*)self.response;
     requestInfo.responseHeaders = httpURLResponse.allHeaderFields;
-
+    
     if (self.isCompleted) {
         requestInfo.responseData = self.data;
     }
-
+    
     if (httpURLResponse.statusCode != 0) {
         requestInfo.statusCode = [NSString stringWithFormat:@"%ld", (long)httpURLResponse.statusCode];
     }
-
+    
     requestInfo.startDate = self.startDate;
     requestInfo.endDate = self.endDate;
-
+    
     packet.requestInfo = requestInfo;
-
+    
     return packet;
 }
 

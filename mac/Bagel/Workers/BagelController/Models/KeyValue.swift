@@ -8,8 +8,7 @@
 
 import Cocoa
 
-class KeyValue: Codable {
-    
+final class KeyValue: Codable {
     var key: String?
     var value: String?
     

@@ -8,49 +8,57 @@
 
 import Cocoa
 
-class PacketsViewModel: BaseListViewModel<BagelPacket>  {
+final class PacketsViewModel: BaseListViewModel<BagelPacket>  {
+    
+    // MARK: - Properties
     
     var addressFilterTerm = "" {
-        didSet {
-            self.refreshItems()
-        }
+        didSet { refreshItems() }
     }
     
     var methodFilterTerm = "" {
-        didSet {
-            self.refreshItems()
-        }
+        didSet { refreshItems() }
     }
     
     var statusFilterTerm = "" {
-        didSet {
-            self.refreshItems()
-        }
+        didSet { refreshItems() }
     }
     
     private var allPackets: [BagelPacket] {
-        return BagelController.shared.selectedProjectController?.selectedDeviceController?.packets ?? []
-    }
-    
-    
-    func register() {
-        NotificationCenter.default.addObserver(self, selector: #selector(self.refreshItems), name: BagelNotifications.didGetPacket, object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(self.refreshItems), name: BagelNotifications.didUpdatePacket, object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(self.refreshItems), name: BagelNotifications.didSelectProject, object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(self.refreshItems), name: BagelNotifications.didSelectDevice, object: nil)
+        BagelController.shared.selectedProjectController?.selectedDeviceController?.packets ?? []
     }
     
     var selectedItem: BagelPacket? {
-        return BagelController.shared.selectedProjectController?.selectedDeviceController?.selectedPacket
+        BagelController.shared.selectedProjectController?.selectedDeviceController?.selectedPacket
     }
     
     var selectedItemIndex: Int? {
-        guard let selectedItem = self.selectedItem else { return nil }
+        guard let selectedItem = selectedItem else { return nil }
+        return items.firstIndex { $0 === selectedItem }
+    }
+    
+    // MARK: - Methods
+    
+    func register() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(refreshItems),
+                                               name: BagelNotifications.didGetPacket,
+                                               object: nil)
         
-        return self.items.firstIndex { $0 === selectedItem }
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(refreshItems),
+                                               name: BagelNotifications.didUpdatePacket,
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(refreshItems),
+                                               name: BagelNotifications.didSelectProject,
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(refreshItems),
+                                               name: BagelNotifications.didSelectDevice,
+                                               object: nil)
     }
     
     @objc func refreshItems() {
@@ -65,40 +73,32 @@ class PacketsViewModel: BaseListViewModel<BagelPacket>  {
     }
     
     func performAddressFiltration(_ items: [BagelPacket])  -> [BagelPacket] {
-        guard addressFilterTerm.count > 0 else {
-            return items
-        }
+        guard !addressFilterTerm.isEmpty else { return items }
         
-        return items.filter {
-            $0.requestInfo?.url?.contains(self.addressFilterTerm) ?? true }
+        return items.filter { $0.requestInfo?.url?.contains(addressFilterTerm) ?? true }
     }
     
     func performMethodFiltration(_ items: [BagelPacket])  -> [BagelPacket] {
-        guard methodFilterTerm.count > 0 else {
-            return items
-        }
+        guard !methodFilterTerm.isEmpty else { return items }
         
         return items.filter
             { $0.requestInfo?.requestMethod?.rawValue.lowercased()
-                .contains(self.methodFilterTerm.lowercased()) ?? true }
+                .contains(methodFilterTerm.lowercased()) ?? true }
     }
     
     func performStatusFiltration(_ items: [BagelPacket])  -> [BagelPacket] {
-        guard statusFilterTerm.count > 0 else {
-            return items
-        }
+        guard !statusFilterTerm.isEmpty else { return items }
         
         guard !statusFilterTerm.trimmingCharacters(in: .whitespaces).isEmpty else {
             return items.filter { $0.requestInfo?.statusCode?.trimmingCharacters(in: .whitespaces).isEmpty ?? true}
         }
         
-        return items.filter
-            { $0.requestInfo?.statusCode?.contains(self.statusFilterTerm) ?? false
-        }
+        return items.filter { $0.requestInfo?.statusCode?.contains(statusFilterTerm) ?? false }
     }
     
     func clearPackets() {
         BagelController.shared.selectedProjectController?.selectedDeviceController?.clear()
-        self.refreshItems()
+        refreshItems()
     }
+    
 }

@@ -9,40 +9,43 @@
 import Cocoa
 import macOSThemeKit
 
-class MethodPacketTableCellView: NSTableCellView {
+final class MethodPacketTableCellView: NSTableCellView {
     
     @IBOutlet private weak var titleTextField: NSTextField!
     
-    var packet: BagelPacket?{
-        didSet{
+    var packet: BagelPacket? {
+        didSet {
             guard let packet = packet else { return }
             refresh(with: packet)
         }
     }
 
     func refresh(with packet: BagelPacket) {
+        guard let requestMethod = packet.requestInfo?.requestMethod else { return }
         
         var methodColor = ThemeColor.httpMethodDefaultColor
-
-        if let requestMethod = packet.requestInfo?.requestMethod {
-            switch requestMethod {
-            case .get:
-                methodColor = ThemeColor.httpMethodGetColor
-            case .put:
-                methodColor = ThemeColor.httpMethodPutColor
-            case .post:
-                methodColor = ThemeColor.httpMethodPostColor
-            case .delete:
-                methodColor = ThemeColor.httpMethodDeleteColor
-            case .patch:
-                methodColor = ThemeColor.httpMethodPatchColor
-            case .head:
-                break
-            }
+        switch requestMethod {
+        case .get:
+            methodColor = ThemeColor.httpMethodGetColor
+            
+        case .put:
+            methodColor = ThemeColor.httpMethodPutColor
+            
+        case .post:
+            methodColor = ThemeColor.httpMethodPostColor
+            
+        case .delete:
+            methodColor = ThemeColor.httpMethodDeleteColor
+            
+        case .patch:
+            methodColor = ThemeColor.httpMethodPatchColor
+            
+        case .head:
+            break
         }
         
-        self.titleTextField.textColor = methodColor
-        self.titleTextField.stringValue = packet.requestInfo?.requestMethod?.rawValue ?? ""
+        titleTextField.textColor = methodColor
+        titleTextField.stringValue = packet.requestInfo?.requestMethod?.rawValue ?? ""
     }
     
 }

@@ -8,7 +8,9 @@
 
 import Cocoa
 
-class BagelProjectController: NSObject {
+final class BagelProjectController: NSObject {
+    
+    // MARK: - Properties
     
     var projectName: String?
     
@@ -19,15 +21,12 @@ class BagelProjectController: NSObject {
         }
     }
     
+    // MARK: - Methods
+    
     @discardableResult
     func addPacket(newPacket: BagelPacket) -> Bool {
-        
-        for deviceController in self.deviceControllers {
-            
-            if deviceController.deviceId == newPacket.device?.deviceId {
-                
-                return deviceController.addPacket(newPacket: newPacket)
-            }
+        for deviceController in deviceControllers where deviceController.deviceId == newPacket.device?.deviceId {
+            return deviceController.addPacket(newPacket: newPacket)
         }
         
         let deviceController = BagelDeviceController()
@@ -38,13 +37,13 @@ class BagelProjectController: NSObject {
         
         deviceController.addPacket(newPacket: newPacket)
         
-        self.deviceControllers.append(deviceController)
+        deviceControllers.append(deviceController)
         
-        if self.deviceControllers.count == 1 {
-            
-            self.selectedDeviceController = self.deviceControllers.first
+        if deviceControllers.count == 1 {
+            selectedDeviceController = deviceControllers.first
         }
         
         return true
     }
+    
 }

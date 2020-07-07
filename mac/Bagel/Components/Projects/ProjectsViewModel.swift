@@ -8,32 +8,27 @@
 
 import Cocoa
 
-class ProjectsViewModel: BaseListViewModel<BagelProjectController> {
+final class ProjectsViewModel: BaseListViewModel<BagelProjectController> {
 
     func register() {
-        
         NotificationCenter.default.addObserver(self, selector: #selector(self.refreshItems), name: BagelNotifications.didGetPacket, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.refreshItems), name: BagelNotifications.didSelectProject, object: nil)
     }
     
     var selectedItem: BagelProjectController? {
-        
-        return BagelController.shared.selectedProjectController
+        BagelController.shared.selectedProjectController
     }
     
     var selectedItemIndex: Int? {
-        
-        if let selectedItem = self.selectedItem {
-            
-            return self.items.firstIndex { $0 === selectedItem }
+        if let selectedItem = selectedItem {
+            return items.firstIndex { $0 === selectedItem }
         }
-        
         return nil
     }
     
     @objc func refreshItems() {
-        
-        self.set(items: BagelController.shared.projectControllers) 
-        self.onChange?()
+        set(items: BagelController.shared.projectControllers)
+        onChange?()
     }
+    
 }

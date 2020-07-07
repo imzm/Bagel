@@ -9,12 +9,12 @@
 import Cocoa
 import macOSThemeKit
 
-class URLPacketTableCellView: NSTableCellView {
+final class URLPacketTableCellView: NSTableCellView {
 
     @IBOutlet private weak var titleTextField: NSTextField!
     
     var packet: BagelPacket? {
-        didSet{
+        didSet {
             guard let packet = packet else { return }
             refresh(with: packet)
         }

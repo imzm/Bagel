@@ -9,44 +9,32 @@
 import Cocoa
 import macOSThemeKit
 
-class StatusPacketTableCellView: NSTableCellView {
+final class StatusPacketTableCellView: NSTableCellView {
 
     @IBOutlet weak var titleTextField: NSTextField!
     
-    var packet: BagelPacket!
-    {
-        didSet
-        {
-            self.refresh()
-        }
+    var packet: BagelPacket! {
+        didSet { refresh() }
     }
     
     func refresh() {
+        guard let statusCodeString = packet.requestInfo?.statusCode, let statusCode = Int(statusCodeString) else { return }
         
-        var titleTextColor = NSColor.black
-        
-        if let statusCodeInt = self.packet.requestInfo?.statusCode {
+        switch statusCode {
+        case 200..<300:
+            titleTextField.textColor = ThemeColor.statusGreenColor
             
-            if let statusCodeInt = Int(statusCodeInt) {
-                
-                if statusCodeInt >= 200 && statusCodeInt < 300 {
-                    
-                    titleTextColor = ThemeColor.statusGreenColor
-                    
-                }else if statusCodeInt >= 300 && statusCodeInt < 400 {
-                    
-                    titleTextColor = ThemeColor.statusOrangeColor
-                    
-                }else if statusCodeInt >= 400 {
-                    
-                    titleTextColor = ThemeColor.statusRedColor
-                }
-                
-            }
+        case 300..<400:
+            titleTextField.textColor = ThemeColor.statusOrangeColor
+            
+        case 400:
+            titleTextField.textColor = ThemeColor.statusRedColor
+            
+        default:
+            break
         }
         
-        self.titleTextField.textColor = titleTextColor
-        self.titleTextField.stringValue = self.packet.requestInfo?.statusCode ?? ""
+        titleTextField.stringValue = statusCodeString
     }
     
 }

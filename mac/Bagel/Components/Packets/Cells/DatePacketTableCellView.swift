@@ -9,13 +9,13 @@
 import Cocoa
 import macOSThemeKit
 
-class DatePacketTableCellView: NSTableCellView {
+final class DatePacketTableCellView: NSTableCellView {
     
     @IBOutlet private weak var titleTextField: NSTextField!
     
     var packet: BagelPacket? {
-        didSet{
-          guard let packet = packet else { return }
+        didSet {
+            guard let packet = packet else { return }
             refresh(with: packet)
         }
     }

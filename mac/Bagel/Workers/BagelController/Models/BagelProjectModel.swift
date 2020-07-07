@@ -8,7 +8,6 @@
 
 import Cocoa
 
-class BagelProjectModel: Codable {
-    
+final class BagelProjectModel: Codable {
     var projectName: String?
 }

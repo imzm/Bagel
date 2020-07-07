@@ -8,8 +8,7 @@
 
 import Cocoa
 
-class BagelDeviceModel: Codable {
-
+final class BagelDeviceModel: Codable {
     var deviceId: String?
     var deviceName: String?
     var deviceDescription: String?

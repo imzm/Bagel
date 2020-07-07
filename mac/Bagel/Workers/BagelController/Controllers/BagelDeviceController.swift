@@ -8,14 +8,18 @@
 
 import Cocoa
 
-class BagelDeviceController: NSObject {
+final class BagelDeviceController: NSObject {
 
+    // MARK: - Properties
+    
     var deviceId: String?
     var deviceName: String?
     var deviceDescription: String?
     
     var packets: [BagelPacket] = []
     private(set) var selectedPacket: BagelPacket?
+    
+    // MARK: - Methods
     
     func select(packet: BagelPacket?) {
         self.selectedPacket = packet
@@ -28,31 +32,22 @@ class BagelDeviceController: NSObject {
     
     @discardableResult
     func addPacket(newPacket: BagelPacket) -> Bool {
-        
-        for packet in self.packets {
-            
-            if packet.packetId == newPacket.packetId {
-                
-                packet.requestInfo = newPacket.requestInfo
-                return false
-            }
+        for packet in packets where packet.packetId == newPacket.packetId {
+            packet.requestInfo = newPacket.requestInfo
+            return false
         }
         
-        self.packets.append(newPacket)
+        packets.append(newPacket)
         
-        
-        
-        if self.packets.count == 1 {
-            
-            self.selectedPacket = self.packets.first
+        if packets.count == 1 {
+            selectedPacket = packets.first
         }
         
         return true
     }
     
     func clear() {
-        
-        self.packets.removeAll()
-        self.select(packet: nil)
+        packets.removeAll()
+        select(packet: nil)
     }
 }

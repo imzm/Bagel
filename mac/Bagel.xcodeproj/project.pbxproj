@@ -96,6 +96,7 @@
 		BCFC854C213848FD001EC6D7 /* BagelProjectModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFC854B213848FD001EC6D7 /* BagelProjectModel.swift */; };
 		BCFC854E2138490E001EC6D7 /* BagelDeviceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFC854D2138490E001EC6D7 /* BagelDeviceModel.swift */; };
 		BCFC855021384981001EC6D7 /* BagelPacket.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFC854F21384981001EC6D7 /* BagelPacket.swift */; };
+		EB4189D524B45E71005D75E9 /* PacketsSpentTimeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB4189D424B45E71005D75E9 /* PacketsSpentTimeCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -214,6 +215,7 @@
 		BCFC854F21384981001EC6D7 /* BagelPacket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BagelPacket.swift; sourceTree = "<group>"; };
 		CF8C8D13D8DDE9F8E381A103 /* Pods-Bagel.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bagel.release.xcconfig"; path = "Pods/Target Support Files/Pods-Bagel/Pods-Bagel.release.xcconfig"; sourceTree = "<group>"; };
 		D3BC1136B2E3E3417E241E77 /* Pods-Bagel.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bagel.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Bagel/Pods-Bagel.debug.xcconfig"; sourceTree = "<group>"; };
+		EB4189D424B45E71005D75E9 /* PacketsSpentTimeCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PacketsSpentTimeCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -261,6 +263,7 @@
 		8A814D03228EC5DB0049A64E /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				EB4189D424B45E71005D75E9 /* PacketsSpentTimeCell.swift */,
 				BCA60B4B2162439200B9DCAD /* StatusPacketTableCellView.swift */,
 				BCFB675621D977C2000199ED /* MethodPacketTableCellView.swift */,
 				BCA60B4D2162439E00B9DCAD /* URLPacketTableCellView.swift */,
@@ -824,8 +827,6 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Bagel/Pods-Bagel-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/CocoaAsyncSocket/CocoaAsyncSocket.framework",
@@ -833,8 +834,6 @@
 				"${BUILT_PRODUCTS_DIR}/macOSThemeKit/macOSThemeKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaAsyncSocket.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Highlightr.framework",
@@ -889,6 +888,7 @@
 				BCA60B41216201B900B9DCAD /* BagelConfiguration.swift in Sources */,
 				BC61DA752162B976000F6D2F /* DetailViewModel.swift in Sources */,
 				BC9C77B22163897600E8ADE8 /* DataTextViewModel.swift in Sources */,
+				EB4189D524B45E71005D75E9 /* PacketsSpentTimeCell.swift in Sources */,
 				BCFC8545213846B0001EC6D7 /* BaseListViewModel.swift in Sources */,
 				BCFC854721384776001EC6D7 /* BaseViewController.swift in Sources */,
 				BCFC854E2138490E001EC6D7 /* BagelDeviceModel.swift in Sources */,
@@ -1085,7 +1085,7 @@
 				CODE_SIGN_ENTITLEMENTS = Bagel/Bagel.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = WX95K9XTFY;
 				INFOPLIST_FILE = Bagel/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
@@ -1104,7 +1104,7 @@
 				CODE_SIGN_ENTITLEMENTS = Bagel/Bagel.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = WX95K9XTFY;
 				INFOPLIST_FILE = Bagel/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;

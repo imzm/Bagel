@@ -10,11 +10,10 @@ import Cocoa
 import CocoaAsyncSocket
 
 protocol BagelPublisherDelegate {
-    
     func didGetPacket(publisher: BagelPublisher, packet: BagelPacket)
 }
 
-class BagelPublisher: NSObject {
+final class BagelPublisher: NSObject {
 
     var delegate: BagelPublisherDelegate?
     
@@ -23,52 +22,40 @@ class BagelPublisher: NSObject {
     var netService: NetService!
     
     func startPublishing() {
-        
-        self.sockets = []
-        
-        self.mainSocket = GCDAsyncSocket(delegate: self, delegateQueue: DispatchQueue.global(qos: .background))
+        sockets = []
+        mainSocket = GCDAsyncSocket(delegate: self, delegateQueue: DispatchQueue.global(qos: .background))
 
         do {
+            try mainSocket.accept(onPort: UInt16(BagelConfiguration.netServicePort))
             
-            try self.mainSocket.accept(onPort: UInt16(BagelConfiguration.netServicePort))
+            sockets.append(mainSocket)
             
-            self.sockets.append(self.mainSocket)
-            
-            self.netService = NetService(domain: BagelConfiguration.netServiceDomain, type: BagelConfiguration.netServiceType, name: BagelConfiguration.netServiceName, port: BagelConfiguration.netServicePort)
-            self.netService.delegate = self
-            self.netService.publish()
-            
+            netService = NetService(domain: BagelConfiguration.netServiceDomain, type: BagelConfiguration.netServiceType, name: BagelConfiguration.netServiceName, port: BagelConfiguration.netServicePort)
+            netService.delegate = self
+            netService.publish()
         } catch {
-            
-            self.tryPublishAgain()
+            tryPublishAgain()
         }
         
     }
 
-    
     func lengthOf(data: Data) -> Int {
-        
         var length = 0
         memcpy(&length, ([UInt8](data)), MemoryLayout<UInt64>.stride)
-
         return length
     }
     
     func parseBody(data: Data) {
-        
         let jsonDecoder = JSONDecoder()
         jsonDecoder.dateDecodingStrategy = .secondsSince1970
         
         do {
-            
             let bagelPacket = try jsonDecoder.decode(BagelPacket.self, from: data)
             
             DispatchQueue.main.async {
                 self.delegate?.didGetPacket(publisher: self, packet: bagelPacket)
             }
-            
         } catch {
-            
             print(error)
         }
     }
@@ -78,12 +65,10 @@ class BagelPublisher: NSObject {
 extension BagelPublisher: NetServiceDelegate {
     
     func netServiceDidPublish(_ sender: NetService) {
-        
         print("publish", sender)
     }
     
     func netService(_ sender: NetService, didNotPublish errorDict: [String : NSNumber]) {
-        
         print("error", errorDict)
     }
 
@@ -93,49 +78,36 @@ extension BagelPublisher: NetServiceDelegate {
 extension BagelPublisher: GCDAsyncSocketDelegate {
     
     func socket(_ sock: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket) {
-        
-        self.sockets.append(newSocket)
+        sockets.append(newSocket)
         newSocket.delegate = self
         newSocket.readData(toLength: UInt(MemoryLayout<UInt64>.stride), withTimeout: -1.0, tag: 0)
     }
     
     func socket(_ sock: GCDAsyncSocket, didRead data: Data, withTag tag: Int) {
-        
         if tag == 0 {
-            
-            let length = self.lengthOf(data: data)
+            let length = lengthOf(data: data)
             sock.readData(toLength: UInt(length), withTimeout: -1.0, tag: 1)
-            
         } else if tag == 1 {
-            
-            self.parseBody(data: data)
+            parseBody(data: data)
             sock.readData(toLength: UInt(MemoryLayout<UInt64>.stride), withTimeout: -1.0, tag: 0)
         }
     }
     
     func socketDidDisconnect(_ sock: GCDAsyncSocket, withError err: Error?) {
-        
-        if self.sockets.contains(sock) {
-            
+        if sockets.contains(sock) {
             sock.delegate = nil
+            sockets = sockets.filter { $0 !== sock }
             
-            self.sockets = Array(self.sockets.filter { $0 !== sock })
-            
-            if self.sockets.count == 0 {
-                
-                self.tryPublishAgain()
-                
+            if sockets.count == 0 {
+                tryPublishAgain()
             }
         }
     }
     
     func tryPublishAgain() {
-        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            
             self.startPublishing()
-            
         }
-        
     }
+    
 }
